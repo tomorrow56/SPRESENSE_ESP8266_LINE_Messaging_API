@@ -1,0 +1,4 @@
+LineMessenger	KEYWORD1
+connectWiFi	KEYWORD2
+sendMessage	KEYWORD2
+setAccessToken	KEYWORD2
