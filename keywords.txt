@@ -1,4 +1,21 @@
-LineMessenger	KEYWORD1
-connectWiFi	KEYWORD2
-sendMessage	KEYWORD2
-setAccessToken	KEYWORD2
+#######################################
+# Syntax Coloring Map for ESP8266 LINE Messaging API
+#######################################
+
+#######################################
+# Datatypes (KEYWORD1)
+#######################################
+
+LineMessenger KEYWORD1
+
+#######################################
+# Methods and Functions (KEYWORD2)
+#######################################
+
+connectWiFi KEYWORD2
+sendMessage KEYWORD2
+setAccessToken KEYWORD2
+
+#######################################
+# Constants (LITERAL1)
+#######################################
