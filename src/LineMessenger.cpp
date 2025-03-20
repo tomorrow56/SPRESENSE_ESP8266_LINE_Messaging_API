@@ -86,7 +86,7 @@ bool LineMessenger::sendCommand(const char* command, int timeout) {
   Serial.println(command);
   long start = millis();
   bool success = false;
-  while (millis() - start < timeout) {
+  while (millis() - start < (uint64_t)timeout) {
     if (Serial2.available()) {
       String response = Serial2.readStringUntil('\n');
       Serial.println(response);
