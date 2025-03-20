@@ -16,21 +16,23 @@ void LineMessenger::setAccessToken(const char* token) {
   accessToken = token;
 }
 
-bool LineMessenger::connectWiFi(const char* ssid, const char* password) {
+bool LineMessenger::connectWiFi(const char* ssid, const char* password, bool showSend) {
   // ESP8266リセット
   if (!sendCommand("AT+RST", 2000)) return false;
+
   // ステーションモード設定
   if (!sendCommand("AT+CWMODE=1", 1000)) return false;
+
   // WiFi接続
   String connectCmd = "AT+CWJAP=\"";
   connectCmd += ssid;
   connectCmd += "\",\"";
   connectCmd += password;
   connectCmd += "\"";
-  return sendCommand(connectCmd.c_str(), 10000);
+  return sendCommand(connectCmd.c_str(), 10000, showSend);
 }
 
-bool LineMessenger::sendMessage(const char* message) {
+bool LineMessenger::sendMessage(const char* message, bool showSend) {
   // TCP接続開始
   String cipStart = "AT+CIPSTART=\"TCP\",\"";
   cipStart += host;
@@ -68,7 +70,7 @@ bool LineMessenger::sendMessage(const char* message) {
   }
 
   // リクエスト送信
-  bool success = sendCommand(request.c_str(), 5000);
+  bool success = sendCommand(request.c_str(), 5000, showSend);
   if (success) {
     Serial.println("Message sent successfully");
   } else {
@@ -80,19 +82,39 @@ bool LineMessenger::sendMessage(const char* message) {
   return success;
 }
 
-bool LineMessenger::sendCommand(const char* command, int timeout) {
+bool LineMessenger::sendCommand(const char* command, int timeout, bool showSend) {
   Serial2.println(command);
   Serial.print("Sent: ");
-  Serial.println(command);
+  if(showSend == true){
+    Serial.println(command);
+  }else{
+    Serial.println("********");
+  }
   long start = millis();
   bool success = false;
   while (millis() - start < (uint64_t)timeout) {
     if (Serial2.available()) {
       String response = Serial2.readStringUntil('\n');
-      Serial.println(response);
-      if (response.indexOf("OK") != -1) success = true;
-      else if (response.indexOf("ERROR") != -1 || response.indexOf("FAIL") != -1) return false;
+      if(response.substring(0,8) != "AT+CWJAP" || showSend == true){
+        Serial.println(response);
+      }
+      if (response.indexOf("OK") != -1){
+        if((String)command == "AT+RST"){
+          //Ignore unexpected data from ESP8266
+          delay(250);
+          while (Serial2.available() > 0) {
+            Serial2.read();
+          }
+        }
+        success = true;
+      }else if (response.indexOf("ERROR") != -1 || response.indexOf("FAIL") != -1){
+        return false;
+      }
     }
+  }
+
+  if(!success){
+    Serial.println(" > Timeout!");
   }
   delay(100);
   return success;

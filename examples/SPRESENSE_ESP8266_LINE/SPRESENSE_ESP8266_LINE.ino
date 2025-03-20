@@ -8,6 +8,8 @@
 
 #include "LineMessenger.h"
 
+#define debug true       // debug mode
+
 // WiFiとLINEの設定
 const char* ssid = "<your SSID>";
 const char* password = "<your Password>";
@@ -24,9 +26,9 @@ void setup() {
   delay(100);
 
   line.setAccessToken(accessToken); // アクセストークン設定
-  if (line.connectWiFi(ssid, password)) {
+  if (line.connectWiFi(ssid, password, debug)) {
     Serial.println("WiFi connected");
-    line.sendMessage("ライブラリ化のテスト"); // メッセージ送信
+    line.sendMessage("Test message from ESP8266", debug); // メッセージ送信
   } else {
     Serial.println("WiFi connection failed");
   }

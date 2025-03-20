@@ -14,14 +14,15 @@
 class LineMessenger {
 public:
   LineMessenger(); // コンストラクタ
-  bool connectWiFi(const char* ssid, const char* password); // WiFi接続
-  bool sendMessage(const char* message);       // メッセージ送信
+  bool connectWiFi(const char* ssid, const char* password, bool showConnect = true); // WiFi接続
+  bool sendMessage(const char* message, bool showSend = true);       // メッセージ送信
   void setAccessToken(const char* token);      // アクセストークン設定
+  bool sendCommand(const char* command, int timeout, bool showSend = true); // ATコマンド送信
 
 private:
   const char* host = "api.line.me";            // LINE APIホスト
   const char* accessToken;                     // LINEアクセストークン
-  bool sendCommand(const char* command, int timeout); // ATコマンド送信
+//  bool sendCommand(const char* command, int timeout); // ATコマンド送信
 };
 
 #endif
